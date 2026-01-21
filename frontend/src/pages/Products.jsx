@@ -6,12 +6,14 @@ import "../pages/Products.css";
 export default function Products() {
   const [products, setProducts] = useState([]);
 
+  // form state
   const [name, setName] = useState("");
   const [stock, setStock] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [editId, setEditId] = useState(null);
 
+  // edit & UI state
+  const [editId, setEditId] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -126,54 +128,7 @@ export default function Products() {
             </button>
 
             {editId && (
-              <button type="button" className="cancel-btn" onClick={resetForm}>
-                Batal
-              </button>
-            )}
-          </form>
-        </div>
-
-        {/* TABLE CARD */}
-        <div className="products-card">
-          <h3>📦 Daftar Produk</h3>
-
-          <div className="table-wrapper">
-            <table className="products-table">
-              <thead>
-                <tr>
-                  <th>Nama</th>
-                  <th>Stok</th>
-                  <th>Harga</th>
-                  <th>Aksi</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products.map((p) => (
-                  <tr key={p.id}>
-                    <td>{p.name}</td>
-                    <td>{p.stock}</td>
-                    <td>Rp {p.price.toLocaleString("id-ID")}</td>
-                    <td>
-                      <button
-                        className="action-btn edit-btn"
-                        onClick={() => handleEdit(p)}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        className="action-btn delete-btn"
-                        onClick={() => handleDelete(p.id)}
-                      >
-                        Hapus
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={resetForm}

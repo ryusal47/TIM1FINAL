@@ -12,7 +12,6 @@ export default function Dashboard() {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const [menuOpen, setMenuOpen] = useState(false);
 
   // ✅ NOTIF LOGIN BERHASIL
@@ -26,7 +25,7 @@ export default function Dashboard() {
       // hapus state agar tidak muncul lagi saat refresh
       window.history.replaceState({}, document.title);
 
-      // auto hide notif (opsional tapi recommended)
+      // auto hide notif
       const timer = setTimeout(() => {
         setSuccessMessage("");
       }, 3000);

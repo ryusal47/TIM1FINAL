@@ -80,6 +80,3 @@ export default function Login() {
           Belum punya akun? <Link to="/register">Register</Link>
         </p>
       </div>
-    </div>
-  );
-}
