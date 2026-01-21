@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axios";
+import "../pages/Products.css";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
@@ -11,8 +12,9 @@ export default function Products() {
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
 
-  // edit mode
+  // edit & UI state
   const [editId, setEditId] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     fetchProducts();
@@ -34,18 +36,11 @@ export default function Products() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const payload = {
-      name,
-      stock,
-      price,
-      description,
-    };
+    const payload = { name, stock, price, description };
 
     if (editId) {
-      // UPDATE
       await api.put(`/products/${editId}`, payload);
     } else {
-      // CREATE
       await api.post("/products", payload);
     }
 
@@ -62,106 +57,78 @@ export default function Products() {
   };
 
   const handleDelete = async (id) => {
-    const confirm = window.confirm("Yakin ingin menghapus produk?");
-    if (!confirm) return;
-
+    if (!window.confirm("Yakin ingin menghapus produk?")) return;
     await api.delete(`/products/${id}`);
     fetchProducts();
   };
 
   return (
-    <div>
+    <div className="products-container">
       {/* NAVBAR */}
-      <nav
-        style={{
-          display: "flex",
-          gap: 20,
-          padding: 15,
-          borderBottom: "1px solid #ccc",
-        }}
-      >
-        <h2>RACINGMU</h2>
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/products">Input Stok</Link>
+      <nav className="products-navbar">
+        <h2 className="brand">RACINGMU</h2>
+
+        {/* BURGER */}
+        <button
+          className={`burger ${menuOpen ? "active" : ""}`}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
+        {/* MENU */}
+        <div className={`nav-links ${menuOpen ? "open" : ""}`}>
+          <Link to="/dashboard" onClick={() => setMenuOpen(false)}>
+            Dashboard
+          </Link>
+          <Link to="/products" onClick={() => setMenuOpen(false)}>
+            Input Stok
+          </Link>
+          <Link to="/transactions" onClick={() => setMenuOpen(false)}>
+            Transaksi Penjualan
+          </Link>
+        </div>
       </nav>
 
-      <div style={{ padding: 20 }}>
-        <h3>{editId ? "Edit Produk" : "Input Stok Produk"}</h3>
+      {/* CONTENT */}
+      <div className="products-content">
+        {/* FORM CARD */}
+        <div className="products-card">
+          <h3>{editId ? "✏️ Edit Produk" : "➕ Input Stok Produk"}</h3>
 
-        {/* FORM */}
-        <form onSubmit={handleSubmit}>
-          <input
-            placeholder="Nama Produk"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-          <br />
+          <form onSubmit={handleSubmit} className="products-form">
+            <input
+              type="text"
+              placeholder="Nama Produk"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
 
-          <input
-            type="number"
-            placeholder="Stok"
-            value={stock}
-            onChange={(e) => setStock(e.target.value)}
-            required
-          />
-          <br />
+            <input
+              type="number"
+              placeholder="Stok"
+              value={stock}
+              onChange={(e) => setStock(e.target.value)}
+              required
+            />
 
-          <input
-            type="number"
-            placeholder="Harga"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            required
-          />
-          <br />
+            <input
+              type="number"
+              placeholder="Harga"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
 
-          <button type="submit">{editId ? "Update" : "Simpan"}</button>
-
-          {editId && (
-            <button
-              type="button"
-              onClick={resetForm}
-              style={{ marginLeft: 10 }}
-            >
-              Batal
+            <button type="submit">
+              {editId ? "Update Produk" : "Simpan Produk"}
             </button>
-          )}
-        </form>
 
-        <br />
-
-        {/* TABLE */}
-        <h3>Daftar Produk</h3>
-        <table border="1" cellPadding="8">
-          <thead>
-            <tr>
-              <th>Nama</th>
-              <th>Stok</th>
-              <th>Harga</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p) => (
-              <tr key={p.id}>
-                <td>{p.name}</td>
-                <td>{p.stock}</td>
-                <td>Rp {p.price}</td>
-                <td>
-                  <button onClick={() => handleEdit(p)}>Edit</button>
-                  <button
-                    onClick={() => handleDelete(p.id)}
-                    style={{ marginLeft: 8 }}
-                  >
-                    Hapus
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
+            {editId && (
+              <button
+                type="button"
+                className="cancel-btn"
+                onClick={resetForm}
